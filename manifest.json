@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "DevToolKit",
+  "version": "0.1.0",
+  "description": "A handy toolkit for developers.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ]
+}
