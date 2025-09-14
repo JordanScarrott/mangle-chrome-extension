@@ -3,15 +3,25 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>DevToolKit</title>
+        <title>Mangle</title>
         <link rel="stylesheet" href="popup.css" />
     </head>
     <body>
-        <h1>DevToolKit</h1>
-        <div id="content-container">
-            <button id="summarize-button">Summarize</button>
-            <button id="test-button">Test me</button>
-            <div id="results"></div>
+        <div id="goal-setting-view">
+            <h2>What is your research goal?</h2>
+            <textarea id="goal-input" placeholder="e.g., Understand the impact of AI on climate change"></textarea>
+            <button id="start-session-btn">Start Research Session</button>
+        </div>
+
+        <div id="active-research-view" class="hidden">
+            <p id="current-goal"></p>
+            <button id="end-session-btn">End Session</button>
+            <button id="add-page-btn">Add Page to Knowledge</button>
+            <div id="query-section">
+                <input id="query-input" type="text" placeholder="Ask a question..." />
+                <button id="ask-btn">Ask</button>
+            </div>
+            <div id="results-container"></div>
         </div>
         <script type="module" src="popup.js"></script>
     </body>
