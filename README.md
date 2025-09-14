@@ -102,6 +102,35 @@ To run this extension locally, follow these steps:
 4.  Click **"Load unpacked"** and select the `mangle-chrome-extension` folder you just cloned.
 5.  The extension icon will appear in the toolbar, ready for use.
 
+### Testing
+
+The project includes a unit test suite for the `mangleService` which communicates with the Wasm module. To run these tests, you will need to set up the Deno runtime.
+
+**Testing Prerequisites:**
+*   [Node.js and npm](https://nodejs.org/en/download/)
+*   [Deno](https://deno.com/)
+
+**Setup and Execution:**
+
+1.  **Install Deno:** The recommended way to install Deno for this project is via npm, which will add the `deno` command to your path.
+    ```bash
+    npm install -g deno
+    ```
+
+2.  **Run the Test Suite:** Once Deno is installed, you can run the tests using the configured Deno task.
+    ```bash
+    deno task test
+    ```
+
+**Expected Outcome:**
+
+When you run the tests, you should see 2 tests passing and 1 test failing. This is the correct and expected outcome.
+
+*   **Passing (2 tests):** The tests for the "Error Case" (invalid syntax) and "No Results Case" (valid query with no results) should pass.
+*   **Failing (1 test):** The "Success Case" test is expected to fail. This is because the test suite has uncovered a likely bug in the Wasm module's query engine, which currently fails to return the correct results for a valid query.
+
+If you see this result, your test environment is set up correctly.
+
 ## Project Roadmap
 
 This project is ambitious, and we are tackling it in phases.
