@@ -49,3 +49,72 @@ Deno.test("Mangle Service - No Results Case", async () => {
   assertEquals(result.status, "success");
   assertEquals(result.data, []); // Expect an empty array
 });
+
+// --- TDD Spec Tests ---
+// The following tests are ignored because they define functionality
+// that is not yet implemented in the Wasm module. They serve as a
+// specification for our development.
+
+Deno.test({
+  name: "Mangle Spec - Basic Fact Retrieval",
+  ignore: true,
+  async fn() {
+    const input = `
+      user("alice", "admin").
+      user(U, R).
+    `;
+    const result = await run_mangle_query(input);
+    assertEquals(result.status, "success");
+    assertEquals(result.data, ['user("alice", "admin").']);
+  },
+});
+
+Deno.test({
+  name: "Mangle Spec - Multi-Variable Query",
+  ignore: true,
+  async fn() {
+    const input = `
+      location("paris", "france").
+      location("berlin", "germany").
+      location(City, "germany").
+    `;
+    const result = await run_mangle_query(input);
+    assertEquals(result.status, "success");
+    assertEquals(result.data, ['location("berlin", "germany").']);
+  },
+});
+
+Deno.test({
+  name: "Mangle Spec - Multi-Step Rule Deduction",
+  ignore: true,
+  async fn() {
+    const input = `
+      parent("a", "b").
+      parent("b", "c").
+      ancestor(X, Y) :- parent(X, Y).
+      ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
+      ancestor("a", C).
+    `;
+    const result = await run_mangle_query(input);
+    assertEquals(result.status, "success");
+    assertEquals(result.data, ['ancestor("a", "b").', 'ancestor("a", "c").']);
+  },
+});
+
+Deno.test({
+  name: "Mangle Spec - Comment and Whitespace Handling",
+  ignore: true,
+  async fn() {
+    const input = `
+      // This is a comment.
+      fact("data").
+
+      // Another comment with extra whitespace.
+
+      fact(X).
+    `;
+    const result = await run_mangle_query(input);
+    assertEquals(result.status, "success");
+    assertEquals(result.data, ['fact("data").']);
+  },
+});
