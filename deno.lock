@@ -1,6 +1,9 @@
 {
   "version": "5",
   "remote": {
+    "https://deno.land/std@0.128.0/fmt/colors.ts": "4575bb20edc666d3ae75fa9fac75f20e4cd423b280008094b05e423cc85047bb",
+    "https://deno.land/std@0.128.0/testing/_diff.ts": "9d849cd6877694152e01775b2d93f9d6b7aef7e24bfe3bfafc4d7a1ac8e9f392",
+    "https://deno.land/std@0.128.0/testing/asserts.ts": "5ddb5ad2517455795cfcd68195de8ea7f9339516d542c2239e427a080a04a5ea",
     "https://deno.land/std@0.224.0/assert/_constants.ts": "a271e8ef5a573f1df8e822a6eb9d09df064ad66a4390f21b3e31f820a38e0975",
     "https://deno.land/std@0.224.0/assert/assert.ts": "09d30564c09de846855b7b071e62b5974b001bb72a4b797958fe0660e7849834",
     "https://deno.land/std@0.224.0/assert/assert_almost_equals.ts": "9e416114322012c9a21fa68e187637ce2d7df25bcbdbfd957cd639e65d3cf293",
