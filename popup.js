@@ -44,9 +44,27 @@ endSessionBtn.addEventListener('click', () => {
     });
 });
 
-// Placeholder listener for adding a page
+// Listener for adding a page to knowledge
 addPageBtn.addEventListener('click', () => {
-    console.log('Adding page to knowledge...');
+    // Query for the active tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        // Send a message to the content script in the active tab
+        chrome.tabs.sendMessage(tabs[0].id, { action: "extract_content" }, (response) => {
+            if (chrome.runtime.lastError) {
+                // Handle errors, e.g., if the content script isn't ready
+                resultsContainer.textContent = 'Error: Could not extract content. Please try again.';
+                console.error(chrome.runtime.lastError);
+                return;
+            }
+
+            // Display the extracted content in the results container
+            if (response && response.content) {
+                resultsContainer.textContent = response.content;
+            } else {
+                resultsContainer.textContent = 'No content extracted.';
+            }
+        });
+    });
 });
 
 // Placeholder listener for asking a question

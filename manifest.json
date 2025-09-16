@@ -2,14 +2,14 @@
   "manifest_version": 3,
   "name": "Mangle Chrome Extension",
   "version": "0.1.0",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting"],
   "background": {
     "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content_script.js"]
+      "js": ["src/lib/Readability.js", "src/content_script.js"]
     }
   ],
   "action": {
