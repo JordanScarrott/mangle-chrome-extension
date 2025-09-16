@@ -6,12 +6,6 @@
   "background": {
     "service_worker": "src/background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["src/lib/Readability.js", "src/content_script.js"]
-    }
-  ],
   "action": {
     "default_popup": "popup.html"
   }
