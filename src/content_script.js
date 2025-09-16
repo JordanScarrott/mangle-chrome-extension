@@ -1,5 +1,4 @@
 // src/content_script.js
-import { Readability } from "https://some-cdn.com/path/to/Readability.js";
 
 // This function will be called when the popup asks for the page content.
 async function extractMainContent() {

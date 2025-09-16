@@ -9,16 +9,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content_script.js"]
+      "js": ["src/lib/Readability.js", "src/content_script.js"]
     }
   ],
   "action": {
     "default_popup": "popup.html"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["src/lib/Readability.js"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 }
