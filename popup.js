@@ -46,23 +46,28 @@ endSessionBtn.addEventListener('click', () => {
 
 // Listener for adding a page to knowledge
 addPageBtn.addEventListener('click', () => {
-    // Query for the active tab
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        // Send a message to the content script in the active tab
-        chrome.tabs.sendMessage(tabs[0].id, { action: "extract_content" }, (response) => {
-            if (chrome.runtime.lastError) {
-                // Handle errors, e.g., if the content script isn't ready
-                resultsContainer.textContent = 'Error: Could not extract content. Please try again.';
-                console.error(chrome.runtime.lastError);
-                return;
-            }
+        const tab = tabs[0];
 
-            // Display the extracted content in the results container
-            if (response && response.content) {
-                resultsContainer.textContent = response.content;
-            } else {
-                resultsContainer.textContent = 'No content extracted.';
-            }
+        // Programmatically inject the scripts into the active tab
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ['src/lib/Readability.js', 'src/content_script.js']
+        }, () => {
+            // After the scripts have been injected, send the message
+            chrome.tabs.sendMessage(tab.id, { action: "extract_content" }, (response) => {
+                if (chrome.runtime.lastError) {
+                    resultsContainer.textContent = 'Error: Could not extract content. Please try again.';
+                    console.error(chrome.runtime.lastError.message);
+                    return;
+                }
+
+                if (response && response.content) {
+                    resultsContainer.textContent = response.content;
+                } else {
+                    resultsContainer.textContent = 'No content extracted.';
+                }
+            });
         });
     });
 });
