@@ -1,28 +1,33 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "preserve",
-    "lib": ["ESNext", "DOM"],
-    "types": ["vite/client", "@types/chrome", "@types/node"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "vite.config.ts",
-    "vitest.config.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "preserve",
+        "lib": ["ESNext", "DOM"],
+        "types": [
+            "vite/client",
+            "@types/chrome",
+            "@types/node",
+            "./src/types/summarizer.d.ts"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "tests/**/*.ts",
+        "vite.config.ts",
+        "vitest.config.ts"
+    ],
+    "exclude": ["node_modules", "dist"]
 }
