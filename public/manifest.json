@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Mangle",
+  "version": "1.0.0",
+  "description": "A Chrome extension to mangle web pages.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "mangle/mangle.wasm",
+        "mangle/wasm_exec.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
