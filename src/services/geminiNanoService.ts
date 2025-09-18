@@ -130,10 +130,10 @@ class GeminiNanoService {
      * @param abortSignal Optional AbortSignal to cancel the request.
      */
     async askPromptStreaming(
-      userPrompt: string,
-      systemPrompt: string | undefined,
-      onChunk: (chunk: string) => void,
-      abortSignal?: AbortSignal
+        userPrompt: string,
+        systemPrompt: string | undefined,
+        onChunk: (chunk: string) => void,
+        abortSignal?: AbortSignal
     ): Promise<void> {
         // Feature detect
         if (typeof LanguageModel === "undefined") {
@@ -177,7 +177,7 @@ class GeminiNanoService {
     }
 
     /**
-     * Simulates a streaming summarizer by using the askPromptStreaming method.
+     * Uses Chrome's Summarizer API to summarize text and streams the response.
      * @param inputText The text to summarize.
      * @param onChunk Callback function to handle each chunk of the response.
      */
@@ -185,8 +185,29 @@ class GeminiNanoService {
         inputText: string,
         onChunk: (chunk: string) => void
     ): Promise<void> {
-        const systemPrompt = "You are a summarization engine. Please summarize the following text, providing the output as a concise, easy-to-read summary in markdown format.";
-        await this.askPromptStreaming(inputText, systemPrompt, onChunk);
+        // Feature detect
+        if (typeof Summarizer === "undefined") {
+            console.warn("Summarizer API not supported in this browser.");
+            return;
+        }
+
+        const availability = await Summarizer.availability();
+        if (availability === "unavailable") {
+            console.warn("Summarizer API is unavailable.");
+            return;
+        }
+
+        if (!navigator.userActivation.isActive) {
+            console.warn("User interaction required before summarization.");
+            return;
+        }
+
+        const summarizer = await Summarizer.create();
+        const stream = await summarizer.summarizeStreaming(inputText);
+
+        for await (const chunk of stream) {
+            onChunk(chunk);
+        }
     }
 }
 
