@@ -121,6 +121,73 @@ class GeminiNanoService {
             await session.destroy();
         }
     }
+
+    /**
+     * Uses Chrome's Prompt API to ask a question using the LanguageModel and streams the response.
+     * @param userPrompt The user's question or prompt.
+     * @param systemPrompt Optional system-level context (e.g. "You are a helpful assistant")
+     * @param onChunk Callback function to handle each chunk of the response.
+     * @param abortSignal Optional AbortSignal to cancel the request.
+     */
+    async askPromptStreaming(
+      userPrompt: string,
+      systemPrompt: string | undefined,
+      onChunk: (chunk: string) => void,
+      abortSignal?: AbortSignal
+    ): Promise<void> {
+        // Feature detect
+        if (typeof LanguageModel === "undefined") {
+            console.warn("Prompt API not supported in this browser.");
+            return;
+        }
+
+        // Check availability
+        const availability = await LanguageModel.availability();
+        if (availability === "unavailable") {
+            console.warn("Prompt API is unavailable.");
+            return;
+        }
+
+        const session = await LanguageModel.create({
+            signal: abortSignal,
+            initialPrompts: systemPrompt
+                ? [
+                      {
+                          role: "system",
+                          content: systemPrompt,
+                      },
+                  ]
+                : undefined,
+        });
+
+        try {
+            // Get a streaming response
+            const stream = await session.promptStreaming(userPrompt, {
+                signal: abortSignal,
+            });
+
+            // Read from the stream and call the callback for each chunk
+            for await (const chunk of stream) {
+                onChunk(chunk);
+            }
+        } finally {
+            // Clean up
+            await session.destroy();
+        }
+    }
+
+    /**
+     * Simulates a streaming summarizer by using the askPromptStreaming method.
+     * @param inputText The text to summarize.
+     * @param onChunk Callback function to handle each chunk of the response.
+     */
+    async summarizeStreaming(
+        inputText: string,
+        onChunk: (chunk: string) => void
+    ): Promise<void> {
+        const systemPrompt = "You are a summarization engine. Please summarize the following text, providing the output as a concise, easy-to-read summary in markdown format.";
+        await this.askPromptStreaming(inputText, systemPrompt, onChunk);
+    }
 }
 
 export const geminiNanoService = new GeminiNanoService();
