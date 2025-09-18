@@ -5,7 +5,7 @@ export function usePrompt() {
     async function prompt(
         inputText: string
     ): Promise<string | MangleSchemaProperties> {
-        const { systemPrompt, schema } = manglePrompt;
+        const { systemPrompt, schema } = manglePrompt();
 
         // Assuming 'articleText' contains the text from Readability.js
         const result =
