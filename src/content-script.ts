@@ -35,6 +35,9 @@ document.addEventListener('mouseup', (event) => {
     removeButton();
 
     if (selectedText) {
+        // --- LOG 1: Text has been selected ---
+        console.log('Mangle Extension: Text selected:', selectedText);
+
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
 
@@ -64,6 +67,8 @@ document.addEventListener('mouseup', (event) => {
 
         // Add click handler to send data to background script
         azeriteButton.addEventListener('click', () => {
+            // --- LOG 3: Button clicked ---
+            console.log('Mangle Extension: "Add to Knowledge" button clicked. Sending text:', selectedText);
             chrome.runtime.sendMessage({
                 type: 'ADD_TO_KNOWLEDGE',
                 payload: selectedText
@@ -72,6 +77,8 @@ document.addEventListener('mouseup', (event) => {
         });
 
         document.body.appendChild(azeriteButton);
+        // --- LOG 2: Button has been created and appeared ---
+        console.log('Mangle Extension: "Add to Knowledge" button appeared.');
     }
 });
 
