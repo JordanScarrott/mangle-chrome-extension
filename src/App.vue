@@ -10,9 +10,7 @@
         <button @click="prompt">Prompt</button>
         <button @click="summarizeStreaming">Summarize (Streaming)</button>
         <button @click="promptStreaming">Prompt (Streaming)</button>
-        <div>
-            output: {{ output }}
-        </div>
+        <div>output: {{ output }}</div>
         <div id="streaming-output"></div>
     </div>
 </template>
@@ -23,6 +21,7 @@ import { geminiNanoService } from "@/services/geminiNanoService";
 import { ref } from "vue";
 import * as smd from "streaming-markdown";
 import DOMPurify from "dompurify";
+import { manglePrompt } from "@/geminiNano/prompts";
 
 // No script logic needed for this simple component yet.
 
@@ -65,7 +64,7 @@ async function promptStreaming() {
         const parser = smd.parser(renderer);
         await geminiNanoService.askPromptStreaming(
             inputText.value,
-            undefined,
+            manglePrompt().systemPrompt,
             (chunk) => {
                 const sanitizedChunk = DOMPurify.sanitize(chunk);
                 smd.parser_write(parser, sanitizedChunk);

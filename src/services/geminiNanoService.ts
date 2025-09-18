@@ -130,10 +130,10 @@ class GeminiNanoService {
      * @param abortSignal Optional AbortSignal to cancel the request.
      */
     async askPromptStreaming(
-      userPrompt: string,
-      systemPrompt: string | undefined,
-      onChunk: (chunk: string) => void,
-      abortSignal?: AbortSignal
+        userPrompt: string,
+        systemPrompt: string | undefined,
+        onChunk: (chunk: string) => void,
+        abortSignal?: AbortSignal
     ): Promise<void> {
         // Feature detect
         if (typeof LanguageModel === "undefined") {
