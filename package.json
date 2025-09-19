@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && cp -r src/mangle dist/",
+    "build": "vite build",
     "lint": "biome lint .",
     "format": "biome format --write .",
     "test": "vitest"
