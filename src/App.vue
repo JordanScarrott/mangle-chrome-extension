@@ -2,14 +2,19 @@
     <div class="container">
         <h1>Mangle Extension</h1>
         <p>Hello, Mangle!</p>
-        <button @click="count++">Click</button>
-        count: {{ count }}
+        isWasmLoaded: {{ isWasmLoaded }}
 
         <input v-model="inputText" />
         <button @click="summarize">Summarize</button>
         <button @click="prompt">Prompt</button>
         <button @click="summarizeStreaming">Summarize (Streaming)</button>
         <button @click="promptStreaming">Prompt (Streaming)</button>
+        <button @click="ingestIntoMangle">Ingest</button>
+
+        <input v-model="mangleInput" />
+        <button @click="executeMangleQuery">Execute Mangle Query</button>
+        <div>Mangle output: {{ mangleOutput }}</div>
+
         <div>output: {{ output }}</div>
         <div id="streaming-output"></div>
     </div>
@@ -17,11 +22,12 @@
 
 <script setup lang="ts">
 import { usePrompt } from "@/composables/geminiNanoComposable";
+import { useMangle } from "@/composables/useMangle";
+import { manglePrompt, MangleSchemaProperties } from "@/geminiNano/prompts";
 import { geminiNanoService } from "@/services/geminiNanoService";
-import { ref } from "vue";
-import * as smd from "streaming-markdown";
 import DOMPurify from "dompurify";
-import { manglePrompt } from "@/geminiNano/prompts";
+import * as smd from "streaming-markdown";
+import { ref } from "vue";
 
 // No script logic needed for this simple component yet.
 
@@ -29,17 +35,21 @@ const count = ref(0);
 
 const inputText = ref("");
 const output = ref("");
+const jsonFacts = ref<string | MangleSchemaProperties>({
+    facts: [],
+    rules: [],
+});
+
+const { isWasmLoaded, mangle, mangledText } = useMangle();
 
 async function summarize() {
     output.value = await geminiNanoService.summarize(inputText.value);
 }
 
 async function prompt() {
-    const response = await usePrompt().prompt(inputText.value);
+    jsonFacts.value = await usePrompt().prompt(inputText.value);
 
-    console.log("SLKDJASLKDJSA: ", response);
-
-    output.value = JSON.stringify(response);
+    output.value = JSON.stringify(jsonFacts.value);
 }
 
 async function summarizeStreaming() {
@@ -73,10 +83,57 @@ async function promptStreaming() {
         smd.parser_end(parser);
     }
 }
+
+async function ingestIntoMangle() {
+    console.log("Mangle facts: ", jsonFacts.value);
+
+    const parsedMangleData = parseMangleQuery(jsonFacts.value);
+
+    const factToWriteToMangle = parsedMangleData.facts.at(0) || "";
+    console.log(
+        "🚀 ~ ingestIntoMangle ~ factToWriteToMangle:",
+        factToWriteToMangle
+    );
+    mangle(factToWriteToMangle);
+}
+
+function parseMangleQuery(
+    mangleData: string | MangleSchemaProperties
+): MangleSchemaProperties {
+    let parsedMangleData: MangleSchemaProperties = {
+        facts: [],
+        rules: [],
+    };
+
+    if (typeof mangleData === "string") {
+        try {
+            parsedMangleData = JSON.parse(mangleData);
+        } catch (e) {
+            throw new Error(
+                "Failed to parse gemini-generated mangle facts: " + e
+            );
+        }
+    } else {
+        return mangleData;
+    }
+
+    return parsedMangleData;
+}
+
+const mangleInput = ref("");
+const mangleOutput = ref("");
+function executeMangleQuery(): void {
+    console.log("🚀 ~ mangleInput:", mangleInput);
+
+    mangleOutput.value = mangle(mangleInput.value);
+
+    console.log("🚀 ~ mangleOutput:", mangleOutput);
+}
 </script>
 
 <style scoped>
 .container {
+    overflow: auto;
     width: 300px;
     padding: 1rem;
     text-align: center;
